@@ -1,0 +1,725 @@
+APPLE LIKE UI MODERN AND CLEAN:
+
+Alhamd Traders — Desktop Customer & Recovery Management System
+
+Technology
+
+Python
+
+PySide6 — modern desktop interface
+
+SQLite — local database
+
+Windows installable application
+
+Local data storage
+
+Backup/restore or portable data-folder transfer
+
+Currency throughout the application: PKR / Rs.
+
+
+Visual Design
+
+The application should have a modern, polished interface inspired by Apple's design language:
+
+Main background: White
+
+Primary accent: Red
+
+Clean typography
+
+Rounded cards and controls
+
+Subtle borders/shadows
+
+Spacious layout
+
+Smooth interactions
+
+Modern tables
+
+Clear status indicators
+
+Minimal unnecessary decoration
+
+Professional enough for daily business use
+
+
+Brand:
+
+ALHAMD TRADERS
+
+
+---
+
+1. Customers
+
+This is the main section.
+
+Each customer will have a record containing:
+
+Field	Description
+
+Customer Name	Customer's name
+Area	Customer's area
+City	Customer's city
+Booker/Salesman	Person assigned to customer
+Opening Date	Date the opening balance starts
+Opening Balance	Amount customer initially owes
+Last Order Date	Most recent order date
+
+
+City
+
+The default city should automatically be:
+
+Lahore
+
+But it should still be possible to change it.
+
+Areas
+
+Areas should work dynamically.
+
+For example, I add:
+
+Customer: Ahmed Store
+Area: Johar Town
+City: Lahore
+
+Later, when adding another customer, the Area dropdown contains:
+
+Johar Town
+
+If I add:
+
+Area: Model Town
+
+then Model Town is also remembered.
+
+So areas are stored in the database and become reusable dropdown options.
+
+The same concept can be used for cities.
+
+
+---
+
+2. Bookers / Salesmen
+
+There will be a separate Bookers tab.
+
+This is essentially the salesman management section.
+
+Example:
+
+Bookers
+
+Ahmed
+Bilal
+Usman
+Ali
+Hassan
+
+You can:
+
+Add a booker
+
+Edit a booker
+
+Delete/deactivate a booker
+
+View their customers
+
+View the total amount owed by their assigned customers
+
+
+When creating a customer:
+
+Booker:
+[ Ahmed ▼ ]
+
+The dropdown automatically contains the saved bookers.
+
+
+---
+
+3. Customer List
+
+The customer screen should show something similar to:
+
+Customer	Area	City	Booker	Due	Last Order
+
+Ahmed Store	Johar Town	Lahore	Ahmed	Rs. 15,000	25 Aug 2026
+Bilal Mart	Model Town	Lahore	Bilal	Rs. 0	20 Aug 2026
+XYZ Traders	DHA	Lahore	Usman	Rs. 65,000	27 Aug 2026
+
+
+If the customer owes nothing:
+
+NIL
+
+and it should appear in green.
+
+For example:
+
+> NIL
+
+
+
+rather than:
+
+> Rs. 0
+
+
+
+
+---
+
+4. Customer Due
+
+Each customer has a continuously calculated outstanding balance.
+
+For example:
+
+Opening
+
+Opening Balance = Rs. 20,000
+
+Customer owes:
+
+Rs. 20,000
+
+Recovery
+
+You receive:
+
+Rs. 5,000
+
+New balance:
+
+20,000 - 5,000 = 15,000
+
+The customer now shows:
+
+Rs. 15,000
+
+New Bill
+
+Later you create a bill:
+
+Bill = Rs. 50,000
+
+New balance:
+
+15,000 + 50,000 = 65,000
+
+Customer now owes:
+
+Rs. 65,000
+
+So the basic accounting logic is:
+
+New Balance = Previous Balance + Bill − Recovery
+
+
+---
+
+5. Add Recovery
+
+There will be a dedicated Recovery tab.
+
+You select:
+
+Customer:
+[ Ahmed Store ▼ ]
+
+Once the customer is selected, the application automatically displays their assigned booker:
+
+Assigned Booker:
+Ahmed
+
+The booker should be selected automatically, but you can change it if another person actually collected the money.
+
+For example:
+
+Customer: Ahmed Store
+
+Assigned Booker: Ahmed
+Collected By: [ Ahmed ▼ ]
+
+Current Due:
+Rs. 20,000
+
+Recovery Amount:
+Rs. 5,000
+
+Date:
+[ 28 Aug 2026 ]
+
+Date defaults to today.
+
+But you can select:
+
+Yesterday
+
+Today
+
+Tomorrow
+
+Any date through the calendar
+
+
+After saving:
+
+Previous Balance: Rs. 20,000
+Recovery:         Rs. 5,000
+New Balance:      Rs. 15,000
+
+This transaction is permanently saved in the history.
+
+
+---
+
+6. Add Bill
+
+There will be an Add Bill section.
+
+Example:
+
+Customer:
+[ Ahmed Store ▼ ]
+
+Salesman/Booker:
+[ Ahmed ▼ ]
+
+Current Due:
+Rs. 15,000
+
+Bill Amount:
+Rs. 50,000
+
+Date:
+[ 28 Aug 2026 ]
+
+After saving:
+
+Previous Balance: Rs. 15,000
+Bill:             Rs. 50,000
+New Balance:      Rs. 65,000
+
+The transaction gets saved into History.
+
+
+---
+
+7. History
+
+This is an important section.
+
+Every financial transaction should be permanently recorded.
+
+For example:
+
+Recovery
+
+Date	Customer	Booker	Type	Previous	Recovery	New Balance
+
+28 Aug	Ahmed Store	Ahmed	Recovery	20,000	5,000	15,000
+
+
+Bill
+
+Date	Customer	Booker	Type	Previous	Bill	New Balance
+
+28 Aug	Ahmed Store	Ahmed	Bill	15,000	50,000	65,000
+
+
+The history should be transaction-based, meaning we don't simply overwrite the balance.
+
+This is important because you can always see exactly what happened.
+
+
+---
+
+8. History Filtering
+
+The History page should have powerful filtering.
+
+You should be able to select:
+
+Specific date
+
+28 Aug 2026
+
+and see everything that happened that day.
+
+Or:
+
+27 Aug 2026 → 28 Aug 2026
+
+to see everything within that range.
+
+Or:
+
+01 Aug 2026 → 28 Aug 2026
+
+for the entire month.
+
+Filters could include:
+
+Date
+
+Date range
+
+Customer
+
+Booker
+
+Transaction type
+
+Bill
+
+Recovery
+
+
+And sorting:
+
+Newest → oldest
+
+Oldest → newest
+
+Highest amount
+
+Lowest amount
+
+
+
+---
+
+9. PDF Export
+
+The selected History results should be exportable to PDF.
+
+For example:
+
+ALHAMD TRADERS
+
+Transaction History
+01 Aug 2026 – 28 Aug 2026
+
+------------------------------------------------------------
+Date       Customer      Booker    Type       Amount
+------------------------------------------------------------
+28 Aug     Ahmed Store   Ahmed     Recovery   Rs. 5,000
+28 Aug     XYZ Traders   Bilal     Bill       Rs. 50,000
+27 Aug     ABC Store     Usman     Recovery   Rs. 10,000
+------------------------------------------------------------
+
+Total Bills:       Rs. 150,000
+Total Recoveries:  Rs. 75,000
+
+The PDF should:
+
+Be generated locally
+
+Be saved to a chosen location
+
+Automatically open after export
+
+Be printable
+
+
+There should also be an option to export all history rather than only the selected date range.
+
+
+---
+
+10. Booker Dashboard
+
+When you go to the Bookers tab, you should be able to click a booker.
+
+For example:
+
+Ahmed
+
+Then see:
+
+AHMED
+
+Assigned Customers: 42
+
+Total Outstanding:
+Rs. 485,000
+
+And underneath:
+
+Customer	Area	Due
+
+Ahmed Store	Johar Town	Rs. 15,000
+Bilal Mart	DHA	NIL
+XYZ Traders	Model Town	Rs. 50,000
+
+
+So you can immediately know:
+
+> How much money is currently owed by all customers assigned to this particular booker?
+
+
+
+
+---
+
+11. Customer Filtering
+
+The customer table should have detailed filtering.
+
+For example:
+
+Filter by Booker
+
+All Bookers ▼
+
+or:
+
+Ahmed
+
+Then only Ahmed's customers appear.
+
+Filter by City
+
+Lahore
+
+Filter by Area
+
+Johar Town
+
+Filter by Outstanding Balance
+
+You should be able to sort:
+
+Highest Due → Lowest Due
+
+or:
+
+Lowest Due → Highest Due
+
+Other useful filters
+
+Customer name
+
+Area
+
+City
+
+Booker
+
+Customers with outstanding balance
+
+Customers with NIL balance
+
+Last order date
+
+Date ranges
+
+
+And ideally a search box:
+
+🔍 Search customers...
+
+which searches customer names.
+
+
+---
+
+12. Total Outstanding
+
+At the bottom of the Customers page there should be a summary.
+
+For example:
+
+124 Customers
+
+Total Outstanding
+Rs. 2,845,500
+
+This means:
+
+> The total amount currently owed by all customers.
+
+
+
+If filters are applied, this should ideally update to the filtered total.
+
+For example, if I select:
+
+Booker: Ahmed
+
+then:
+
+Customers: 42
+
+Ahmed's Total Outstanding:
+Rs. 485,000
+
+This would make the system much more useful.
+
+
+---
+
+13. Database Structure
+
+I would structure the SQLite database roughly like this:
+
+database.db
+
+├── customers
+├── bookers
+├── areas
+├── cities
+├── transactions
+└── settings
+
+The important part is that transactions are never simply deleted when the balance changes.
+
+For example:
+
+Opening Balance
+       ↓
++ Bills
+       ↓
+- Recoveries
+       ↓
+Current Balance
+
+This allows the application to maintain a proper financial history.
+
+
+---
+
+14. Data Protection & Transfer
+
+Since this is a local application, I would keep the actual business data separate from the application installation.
+
+Something like:
+
+AlhamdTraders/
+│
+├── app
+│   └── application files
+│
+└── data
+    ├── alhamd.db
+    ├── backups
+    └── documents
+
+The database can be backed up.
+
+For example:
+
+Alhamd_Backup_2026-08-28.db
+
+Or a complete backup:
+
+Alhamd_Backup_2026-08-28.zip
+
+Then you can move it using a USB to another computer.
+
+That gives you the behavior you originally described:
+
+Old PC → Copy backup/data → New PC → Restore → All customers/history/settings return.
+
+I would also strongly recommend an automatic backup system so a damaged database or accidental mistake doesn't destroy all business records.
+
+
+---
+
+15. Suggested Main Navigation
+
+I would make the application have a sidebar like:
+
+┌─────────────────────────────┐
+│                             │
+│  ALHAMD                     │
+│  TRADERS                    │
+│                             │
+│  🏠 Dashboard               │
+│                             │
+│  👥 Customers               │
+│  👤 Bookers                 │
+│                             │
+│  💰 Add Recovery            │
+│  🧾 Add Bill                │
+│                             │
+│  📋 History                 │
+│                             │
+│  ⚙ Settings                 │
+│                             │
+└─────────────────────────────┘
+
+The Dashboard could show:
+
+Good Morning
+
+ALHAMD TRADERS
+
+────────────────────────────────
+
+Customers
+124
+
+Total Outstanding
+Rs. 2,845,500
+
+Today's Bills
+Rs. 125,000
+
+Today's Recoveries
+Rs. 75,000
+
+────────────────────────────────
+
+Top Outstanding Customers
+
+1. XYZ Traders       Rs. 250,000
+2. Ahmed Store        Rs. 180,000
+3. Bilal Mart         Rs. 150,000
+
+That would give you a quick overview when opening the software.
+
+
+Bills & Recoveries: Users can Edit and Delete transactions from History.
+Booker reassignment: If a customer's booker changes, old transactions keep the original booker. New transactions use the customer's current assigned booker by default.
+Usage: One computer only.
+Login: No login/password.
+Currency: PKR / Rs.
+Default city: Lahore.
+Local database: SQLite.
+UI: PySide6, white + red, modern Apple-like design.
+Important behavior for Edit/Delete
+I recommend that editing a transaction automatically recalculates all balances affected by that transaction, rather than permanently storing a manually entered "new balance."
+For example:
+Opening Balance                 Rs. 20,000
+
+28 Aug — Bill                   +Rs. 50,000
+29 Aug — Recovery               -Rs. 10,000
+30 Aug — Bill                   +Rs. 15,000
+
+Current Due                     Rs. 75,000
+If you edit the 28 Aug bill from 50,000 → 40,000, the system recalculates:
+20,000 + 40,000 - 10,000 + 15,000
+= Rs. 65,000
+Likewise, if you delete the recovery, the balance automatically becomes:
+Rs. 75,000 + Rs. 10,000
+= Rs. 85,000
+This is much safer than simply modifying the current balance.
+One other recommendation
+For deletion, I would show a confirmation:
+Delete this transaction?
+Customer: Ahmed Store
+Type: Recovery
+Amount: Rs. 5,000
+Date: 28 Aug 2026
+Cancel | Delete
+That prevents accidental deletion.
+And because you're using one computer, we can also have automatic database backups, for example whenever the application starts or once per day. That way, if something goes wrong, you have a previous copy of the database.
