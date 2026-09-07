@@ -51,10 +51,11 @@ class MainWindow(QMainWindow):
         # Navigation Buttons
         self.nav_buttons = []
         
-        from icons import get_svg_icon, SVG_DASHBOARD, SVG_USERS, SVG_BOOKERS, SVG_BILL, SVG_RECOVERY, SVG_HISTORY, SVG_SETTINGS
+        from icons import get_svg_icon, SVG_DASHBOARD, SVG_USERS, SVG_BOOKERS, SVG_BILL, SVG_RECOVERY, SVG_HISTORY, SVG_SETTINGS, SVG_LEDGER
         
         self.btn_dashboard = self.create_nav_button(" Dashboard", get_svg_icon(SVG_DASHBOARD))
         self.btn_customers = self.create_nav_button(" Customers", get_svg_icon(SVG_USERS))
+        self.btn_ledger = self.create_nav_button(" Customer Ledger", get_svg_icon(SVG_LEDGER))
         self.btn_bookers = self.create_nav_button(" Bookers", get_svg_icon(SVG_BOOKERS))
         
         self.sidebar_layout.addSpacing(20)
@@ -86,7 +87,7 @@ class MainWindow(QMainWindow):
         # Views
         from views.dashboard import DashboardView
         from views.customers import CustomersView
-        from views.customer_detail import CustomerDetailView
+        from views.ledger import LedgerView
         from views.bookers import BookersView
         from views.add_bill import AddTransactionView
         from views.history import HistoryView
@@ -94,7 +95,7 @@ class MainWindow(QMainWindow):
         
         self.view_dashboard = DashboardView()
         self.view_customers = CustomersView()
-        self.view_customer_detail = CustomerDetailView()
+        self.view_ledger = LedgerView()
         self.view_bookers = BookersView()
         self.view_add_bill = AddTransactionView("Bill")
         self.view_add_recovery = AddTransactionView("Recovery")
@@ -103,25 +104,26 @@ class MainWindow(QMainWindow):
         
         self.stacked_widget.addWidget(self.view_dashboard) # 0
         self.stacked_widget.addWidget(self.view_customers) # 1
-        self.stacked_widget.addWidget(self.view_bookers) # 2
-        self.stacked_widget.addWidget(self.view_add_bill) # 3
-        self.stacked_widget.addWidget(self.view_add_recovery) # 4
-        self.stacked_widget.addWidget(self.view_history) # 5
-        self.stacked_widget.addWidget(self.view_settings) # 6
-        self.stacked_widget.addWidget(self.view_customer_detail) # 7
+        self.stacked_widget.addWidget(self.view_ledger)    # 2
+        self.stacked_widget.addWidget(self.view_bookers)   # 3
+        self.stacked_widget.addWidget(self.view_add_bill)  # 4
+        self.stacked_widget.addWidget(self.view_add_recovery) # 5
+        self.stacked_widget.addWidget(self.view_history)   # 6
+        self.stacked_widget.addWidget(self.view_settings)  # 7
         
         # Map buttons to indices
         self.btn_dashboard.clicked.connect(lambda: self.switch_view(0))
         self.btn_customers.clicked.connect(lambda: self.switch_view(1))
-        self.btn_bookers.clicked.connect(lambda: self.switch_view(2))
-        self.btn_add_bill.clicked.connect(lambda: self.switch_view(3))
-        self.btn_add_recovery.clicked.connect(lambda: self.switch_view(4))
-        self.btn_history.clicked.connect(lambda: self.switch_view(5))
-        self.btn_settings.clicked.connect(lambda: self.switch_view(6))
+        self.btn_ledger.clicked.connect(lambda: self.open_ledger_tab())
+        self.btn_bookers.clicked.connect(lambda: self.switch_view(3))
+        self.btn_add_bill.clicked.connect(lambda: self.switch_view(4))
+        self.btn_add_recovery.clicked.connect(lambda: self.switch_view(5))
+        self.btn_history.clicked.connect(lambda: self.switch_view(6))
+        self.btn_settings.clicked.connect(lambda: self.switch_view(7))
         
         # Signals
-        self.view_customers.customer_selected.connect(self.show_customer_detail)
-        self.view_customer_detail.back_clicked.connect(lambda: self.switch_view(1))
+        self.view_customers.customer_selected.connect(self.show_customer_ledger)
+        self.view_ledger.back_clicked.connect(lambda: self.switch_view(1))
         
         # Set active initially
         self.switch_view(0)
@@ -141,18 +143,22 @@ class MainWindow(QMainWindow):
         if hasattr(current_widget, 'refresh_data'):
             current_widget.refresh_data()
             
-        # Update active button (0-6 map directly to nav_buttons)
+        # Update active button (0-7 map directly to nav_buttons)
         if index < len(self.nav_buttons):
             for i, btn in enumerate(self.nav_buttons):
                 btn.setChecked(i == index)
-        else:
-            # If it's a detail view (index 7), keep the parent's button active
-            if index == 7:
-                self.nav_buttons[1].setChecked(True) # Customers
                 
-    def show_customer_detail(self, customer_id):
-        self.view_customer_detail.load_customer(customer_id)
-        self.switch_view(7)
+    def open_ledger_tab(self):
+        """Opened directly from the sidebar button."""
+        self.view_ledger.btn_back.setVisible(False)
+        self.switch_view(2)
+
+    def show_customer_ledger(self, customer_id: int):
+        """Opened with a specific customer (e.g. double clicked from Customers table)."""
+        if customer_id and customer_id > 0:
+            self.view_ledger.load_customer(customer_id)
+        self.view_ledger.btn_back.setVisible(True)
+        self.switch_view(2)
         
     def refresh_all_views(self):
         """Refreshes data across all stacked views in the application."""
