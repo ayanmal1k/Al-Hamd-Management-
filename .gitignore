@@ -20,7 +20,8 @@ dist/
 
 # IDEs
 .idea/
-.vscode/
 
 # Ignore artifacts
 *.pdf
+config.bat
+node_modules
