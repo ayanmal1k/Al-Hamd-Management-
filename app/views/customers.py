@@ -25,7 +25,14 @@ class CustomersView(QWidget):
         self.title.setStyleSheet("font-size: 24px; font-weight: bold;")
         self.header_layout.addWidget(self.title)
         
-        from icons import get_svg_icon, SVG_ADD
+        from icons import get_svg_icon, SVG_ADD, SVG_LEDGER
+        
+        self.btn_view_ledger = QPushButton(" View Ledger")
+        self.btn_view_ledger.setIcon(get_svg_icon(SVG_LEDGER, color="#1d1d1f"))
+        self.btn_view_ledger.setToolTip("Open selected customer's ledger or general ledger")
+        self.btn_view_ledger.clicked.connect(self.open_selected_ledger)
+        self.header_layout.addWidget(self.btn_view_ledger, alignment=Qt.AlignRight)
+        
         self.btn_add = QPushButton(" Add Customer")
         self.btn_add.setIcon(get_svg_icon(SVG_ADD, color="white"))
         self.btn_add.setProperty("class", "primary")
@@ -186,3 +193,15 @@ class CustomersView(QWidget):
         if item:
             customer_id = item.data(Qt.UserRole)
             self.customer_selected.emit(customer_id)
+
+    def open_selected_ledger(self):
+        selected_rows = self.table.selectionModel().selectedRows()
+        if selected_rows:
+            row = selected_rows[0].row()
+            item = self.table.item(row, 0)
+            if item:
+                customer_id = item.data(Qt.UserRole)
+                self.customer_selected.emit(customer_id)
+                return
+        # If no row selected, open general ledger tab
+        self.customer_selected.emit(-1)
