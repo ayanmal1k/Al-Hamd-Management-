@@ -153,3 +153,11 @@ class MainWindow(QMainWindow):
     def show_customer_detail(self, customer_id):
         self.view_customer_detail.load_customer(customer_id)
         self.switch_view(7)
+        
+    def refresh_all_views(self):
+        """Refreshes data across all stacked views in the application."""
+        for i in range(self.stacked_widget.count()):
+            widget = self.stacked_widget.widget(i)
+            if hasattr(widget, 'refresh_data'):
+                widget.refresh_data()
+
