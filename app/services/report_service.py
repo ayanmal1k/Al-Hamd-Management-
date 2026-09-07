@@ -196,7 +196,6 @@ def generate_history_pdf(transactions: list, start_date: str = None, end_date: s
             
     total_bills_rs = total_bills / 100.0
     total_rec_rs = total_recoveries / 100.0
-    net_diff_rs = (total_bills - total_recoveries) / 100.0
 
     kpi_card_1 = [
         Paragraph("<font color='#991b1b'>TOTAL BILLS</font>", card_label_style),
@@ -209,31 +208,24 @@ def generate_history_pdf(transactions: list, start_date: str = None, end_date: s
         Paragraph(f"<font color='#15803d'>Rs. {total_rec_rs:,.2f}</font>", card_val_style)
     ]
     kpi_card_3 = [
-        Paragraph("<font color='#1e40af'>NET BALANCE MOVEMENT</font>", card_label_style),
-        Spacer(1, 3),
-        Paragraph(f"<font color='#1d4ed8'>Rs. {net_diff_rs:,.2f}</font>", card_val_style)
-    ]
-    kpi_card_4 = [
         Paragraph("<font color='#475569'>TOTAL RECORDS</font>", card_label_style),
         Spacer(1, 3),
         Paragraph(f"<font color='#0f172a'>{len(transactions):,} Entries</font>", card_val_style)
     ]
 
     summary_table = Table(
-        [[kpi_card_1, kpi_card_2, kpi_card_3, kpi_card_4]],
-        colWidths=[175, 175, 175, 175],
+        [[kpi_card_1, kpi_card_2, kpi_card_3]],
+        colWidths=[240, 240, 240],
         rowHeights=[44]
     )
     summary_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BACKGROUND', (0, 0), (0, 0), colors.HexColor('#fef2f2')),
         ('BACKGROUND', (1, 0), (1, 0), colors.HexColor('#f0fdf4')),
-        ('BACKGROUND', (2, 0), (2, 0), colors.HexColor('#eff6ff')),
-        ('BACKGROUND', (3, 0), (3, 0), colors.HexColor('#f8fafc')),
+        ('BACKGROUND', (2, 0), (2, 0), colors.HexColor('#f8fafc')),
         ('BOX', (0, 0), (0, 0), 1, colors.HexColor('#fecaca')),
         ('BOX', (1, 0), (1, 0), 1, colors.HexColor('#bbf7d0')),
-        ('BOX', (2, 0), (2, 0), 1, colors.HexColor('#bfdbfe')),
-        ('BOX', (3, 0), (3, 0), 1, colors.HexColor('#e2e8f0')),
+        ('BOX', (2, 0), (2, 0), 1, colors.HexColor('#e2e8f0')),
         ('TOPPADDING', (0, 0), (-1, -1), 6),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
     ]))
@@ -283,7 +275,7 @@ def generate_history_pdf(transactions: list, start_date: str = None, end_date: s
         "", "", "", # Spanned across 4 columns
         Paragraph(f"<b>Rs. {(total_bills + total_recoveries) / 100.0:,.2f}</b>", cell_right_bold),
         "",
-        Paragraph(f"<b>Diff: Rs. {net_diff_rs:,.2f}</b>", cell_right_bold)
+        ""
     ]
     table_data.append(summary_row)
 
