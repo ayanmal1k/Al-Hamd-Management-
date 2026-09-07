@@ -129,14 +129,20 @@ QTableWidget {
 }
 
 QHeaderView::section {
-    background-color: #ffffff;
-    color: #86868b;
+    background-color: #f8f9fa;
+    color: #495057;
     font-weight: 600;
     font-size: 12px;
-    padding: 8px;
+    padding: 8px 10px;
     border: none;
-    border-bottom: 1px solid #e5e5e5;
+    border-right: 1px solid #dcdfe6;
+    border-bottom: 2px solid #dcdfe6;
     text-transform: uppercase;
+}
+
+QHeaderView::section:hover {
+    background-color: #e9ecef;
+    color: #212529;
 }
 
 QTableWidget::item {

@@ -33,10 +33,16 @@ class BookersView(QWidget):
         self.table = QTableWidget()
         self.table.setColumnCount(4)
         self.table.setHorizontalHeaderLabels(["Name", "Status", "Assigned Customers", "Total Outstanding"])
-        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        
+        # Excel-like interactive draggable column resizing
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Interactive)
+        header.setStretchLastSection(False)
+        self.table.setColumnWidth(0, 240) # Name
+        self.table.setColumnWidth(1, 130) # Status
+        self.table.setColumnWidth(2, 180) # Assigned Customers
+        self.table.setColumnWidth(3, 180) # Total Outstanding
+        
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.layout.addWidget(self.table)

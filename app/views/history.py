@@ -87,10 +87,19 @@ class HistoryView(QWidget):
         self.table = QTableWidget()
         self.table.setColumnCount(7)
         self.table.setHorizontalHeaderLabels(["Date", "Customer", "Booker", "Type", "Amount", "Prev. Balance", "New Balance"])
-        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeToContents)
+        
+        # Excel-like interactive draggable column resizing
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Interactive)
+        header.setStretchLastSection(False)
+        self.table.setColumnWidth(0, 110) # Date
+        self.table.setColumnWidth(1, 230) # Customer
+        self.table.setColumnWidth(2, 140) # Booker
+        self.table.setColumnWidth(3, 100) # Type
+        self.table.setColumnWidth(4, 130) # Amount
+        self.table.setColumnWidth(5, 130) # Prev. Balance
+        self.table.setColumnWidth(6, 130) # New Balance
+        
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.layout.addWidget(self.table)

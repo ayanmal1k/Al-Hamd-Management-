@@ -62,10 +62,23 @@ class CustomersView(QWidget):
         
         # Table
         self.table = QTableWidget()
-        self.table.setColumnCount(6)
-        self.table.setHorizontalHeaderLabels(["Customer", "Area", "City", "Booker", "Due", "Last Order"])
-        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.table.setColumnCount(7)
+        self.table.setHorizontalHeaderLabels([
+            "Customer", "Area", "City", "Booker", "Opening Balance Date", "Due", "Last Order"
+        ])
+        
+        # Excel-like interactive draggable column resizing
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Interactive)
+        header.setStretchLastSection(False)
+        self.table.setColumnWidth(0, 220) # Customer
+        self.table.setColumnWidth(1, 140) # Area
+        self.table.setColumnWidth(2, 120) # City
+        self.table.setColumnWidth(3, 140) # Booker
+        self.table.setColumnWidth(4, 160) # Opening Balance Date
+        self.table.setColumnWidth(5, 130) # Due
+        self.table.setColumnWidth(6, 120) # Last Order
+        
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.cellDoubleClicked.connect(self.on_customer_double_clicked)
@@ -145,6 +158,12 @@ class CustomersView(QWidget):
             self.table.setItem(row_idx, 2, QTableWidgetItem(customer.get('city') or ''))
             self.table.setItem(row_idx, 3, QTableWidgetItem(customer.get('booker') or ''))
             
+            # Opening Balance Date
+            op_date = customer.get('opening_date') or '-'
+            op_item = QTableWidgetItem(op_date)
+            op_item.setTextAlignment(Qt.AlignCenter)
+            self.table.setItem(row_idx, 4, op_item)
+            
             due_amount = customer['current_due']
             total_due += due_amount
             
@@ -153,8 +172,8 @@ class CustomersView(QWidget):
             if due_amount == 0:
                 due_item.setForeground(Qt.darkGreen)
             
-            self.table.setItem(row_idx, 4, due_item)
-            self.table.setItem(row_idx, 5, QTableWidgetItem(customer.get('last_order_date') or ''))
+            self.table.setItem(row_idx, 5, due_item)
+            self.table.setItem(row_idx, 6, QTableWidgetItem(customer.get('last_order_date') or ''))
             
             # Store ID in the first column for reference
             self.table.item(row_idx, 0).setData(Qt.UserRole, customer['id'])

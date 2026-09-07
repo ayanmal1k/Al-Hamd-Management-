@@ -73,7 +73,18 @@ class CustomerDetailView(QWidget):
         self.table = QTableWidget()
         self.table.setColumnCount(6)
         self.table.setHorizontalHeaderLabels(["Date", "Type", "Notes", "Bill", "Recovery", "Balance"])
-        self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        
+        # Excel-like interactive draggable column resizing
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Interactive)
+        header.setStretchLastSection(False)
+        self.table.setColumnWidth(0, 110) # Date
+        self.table.setColumnWidth(1, 100) # Type
+        self.table.setColumnWidth(2, 280) # Notes
+        self.table.setColumnWidth(3, 130) # Bill
+        self.table.setColumnWidth(4, 130) # Recovery
+        self.table.setColumnWidth(5, 140) # Balance
+        
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.layout.addWidget(self.table)

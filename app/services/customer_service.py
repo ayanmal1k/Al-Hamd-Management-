@@ -8,7 +8,7 @@ def get_all_customers() -> List[dict]:
         cursor.execute('''
             SELECT 
                 c.id, c.name, a.name as area, ci.name as city, 
-                b.name as booker, c.opening_balance,
+                b.name as booker, c.opening_date, c.opening_balance,
                 COALESCE(SUM(CASE WHEN t.type = 'Bill' THEN t.amount ELSE 0 END), 0) as total_bills,
                 COALESCE(SUM(CASE WHEN t.type = 'Recovery' THEN t.amount ELSE 0 END), 0) as total_recoveries,
                 c.opening_balance + 
