@@ -1,7 +1,7 @@
 import os
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QComboBox, 
                                QLabel, QPushButton, QTableWidget, QTableWidgetItem,
-                               QHeaderView, QFrame, QDateEdit)
+                               QHeaderView, QFrame, QDateEdit, QFileDialog)
 from PySide6.QtCore import Qt, QDate
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
@@ -29,11 +29,16 @@ class HistoryView(QWidget):
         self.header_layout.addWidget(self.title)
         
         from icons import get_svg_icon, SVG_EXPORT
-        self.btn_export = QPushButton(" Export to PDF")
+        self.btn_export = QPushButton(" Export View (PDF)")
         self.btn_export.setIcon(get_svg_icon(SVG_EXPORT, color="white"))
         self.btn_export.setProperty("class", "primary")
-        self.btn_export.clicked.connect(self.export_pdf)
+        self.btn_export.clicked.connect(lambda: self.export_pdf(export_all=False))
         self.header_layout.addWidget(self.btn_export, alignment=Qt.AlignRight)
+        
+        self.btn_export_all = QPushButton(" Export All (PDF)")
+        self.btn_export_all.setIcon(get_svg_icon(SVG_EXPORT, color="#1d1d1f"))
+        self.btn_export_all.clicked.connect(lambda: self.export_pdf(export_all=True))
+        self.header_layout.addWidget(self.btn_export_all)
         
         self.layout.addLayout(self.header_layout)
         
@@ -169,15 +174,53 @@ class HistoryView(QWidget):
         self.lbl_total_bills.setText(f"Total Bills: {format_currency(total_bills)}")
         self.lbl_total_recoveries.setText(f"Total Recoveries: {format_currency(total_recoveries)}")
         
-    def export_pdf(self):
+    def export_pdf(self, export_all=False):
         from views.components import ModernDialog
+        from paths import get_documents_dir
+        from datetime import datetime
         try:
-            start_date = self.date_from.date().toString(Qt.ISODate)
-            end_date = self.date_to.date().toString(Qt.ISODate)
-            filename = generate_history_pdf(self.transactions, start_date, end_date)
+            if export_all:
+                txs = get_filtered_history() # Fetches complete unfiltered transactions
+                start_date = None
+                end_date = None
+                cust_filter = None
+                booker_filter = None
+                type_filter = None
+                timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+                default_name = f"AlHamd_Complete_History_{timestamp}.pdf"
+            else:
+                txs = self.transactions
+                start_date = self.date_from.date().toString(Qt.ISODate)
+                end_date = self.date_to.date().toString(Qt.ISODate)
+                cust_filter = self.filter_customer.currentText()
+                booker_filter = self.filter_booker.currentText()
+                type_filter = self.filter_type.currentText()
+                default_name = f"AlHamd_History_{start_date}_to_{end_date}.pdf"
+                
+            if not txs:
+                ModernDialog("Notice", "No transactions found to export.", self).exec()
+                return
+
+            default_path = os.path.join(get_documents_dir(), default_name)
+            save_path, _ = QFileDialog.getSaveFileName(
+                self, "Save PDF Report", default_path, "PDF Documents (*.pdf);;All Files (*)"
+            )
+            if not save_path:
+                return
+
+            filename = generate_history_pdf(
+                transactions=txs,
+                start_date=start_date,
+                end_date=end_date,
+                customer_filter=cust_filter,
+                booker_filter=booker_filter,
+                type_filter=type_filter,
+                output_path=save_path
+            )
             
-            ModernDialog("Export Successful", f"PDF saved successfully to:\n{filename}", self).exec()
+            ModernDialog("Export Successful", f"PDF report saved successfully to:\n{filename}", self).exec()
             # Automatically open the PDF
             QDesktopServices.openUrl(QUrl.fromLocalFile(filename))
         except Exception as e:
             ModernDialog("Export Failed", f"Failed to generate PDF:\n{str(e)}", self, is_error=True).exec()
+

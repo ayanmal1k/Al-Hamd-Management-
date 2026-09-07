@@ -30,6 +30,13 @@ class CustomerDetailView(QWidget):
         self.title.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.header_layout.addWidget(self.title, stretch=1)
         
+        from icons import get_svg_icon, SVG_EXPORT
+        self.btn_export_pdf = QPushButton(" Export Statement (PDF)")
+        self.btn_export_pdf.setIcon(get_svg_icon(SVG_EXPORT, color="white"))
+        self.btn_export_pdf.setProperty("class", "primary")
+        self.btn_export_pdf.clicked.connect(self.export_statement_pdf)
+        self.header_layout.addWidget(self.btn_export_pdf)
+        
         self.layout.addLayout(self.header_layout)
         
         # Info Card
@@ -92,7 +99,45 @@ class CustomerDetailView(QWidget):
         else:
             self.lbl_due.setStyleSheet("font-size: 18px; font-weight: bold; color: #ff3b30;")
             
+        self.current_customer = customer
         self.load_ledger(customer['opening_balance'])
+        
+    def export_statement_pdf(self):
+        from views.components import ModernDialog
+        from PySide6.QtWidgets import QFileDialog
+        from PySide6.QtGui import QDesktopServices
+        from PySide6.QtCore import QUrl
+        from paths import get_documents_dir
+        from datetime import datetime
+        from services.report_service import generate_customer_ledger_pdf
+        import os
+
+        if not self.customer_id or not hasattr(self, 'current_customer') or not self.current_customer:
+            return
+
+        try:
+            transactions = get_customer_transactions(self.customer_id)
+            safe_name = "".join(c for c in self.current_customer.get('name', 'Customer') if c.isalnum() or c in (' ', '_', '-')).strip().replace(' ', '_')
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+            default_name = f"Statement_{safe_name}_{timestamp}.pdf"
+            default_path = os.path.join(get_documents_dir(), default_name)
+
+            save_path, _ = QFileDialog.getSaveFileName(
+                self, "Save Customer Statement PDF", default_path, "PDF Documents (*.pdf);;All Files (*)"
+            )
+            if not save_path:
+                return
+
+            filename = generate_customer_ledger_pdf(
+                customer=self.current_customer,
+                transactions=transactions,
+                output_path=save_path
+            )
+
+            ModernDialog("Export Successful", f"Statement PDF saved successfully to:\n{filename}", self).exec()
+            QDesktopServices.openUrl(QUrl.fromLocalFile(filename))
+        except Exception as e:
+            ModernDialog("Export Failed", f"Failed to generate statement PDF:\n{str(e)}", self, is_error=True).exec()
         
     def load_ledger(self, opening_balance):
         transactions = get_customer_transactions(self.customer_id)
