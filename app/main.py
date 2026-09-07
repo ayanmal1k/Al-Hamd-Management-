@@ -1,3 +1,4 @@
+import utils.session
 import sys
 import os
 from views.main_window import MainWindow
