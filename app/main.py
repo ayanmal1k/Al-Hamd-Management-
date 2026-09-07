@@ -12,15 +12,17 @@ if __name__ == "__main__":
     
     app = QApplication(sys.argv)
     
+    from paths import get_asset_path, get_resource_path
+    
     # Set App Icon
-    icon_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets', 'icon.ico'))
+    icon_path = get_asset_path('icon.ico')
     if os.path.exists(icon_path):
         app.setWindowIcon(QIcon(icon_path))
     
     # Load stylesheet if it exists
-    qss_path = os.path.join(os.path.dirname(__file__), 'styles.qss')
+    qss_path = get_resource_path('styles.qss')
     if os.path.exists(qss_path):
-        with open(qss_path, 'r') as f:
+        with open(qss_path, 'r', encoding='utf-8') as f:
             app.setStyleSheet(f.read())
             
     window = MainWindow()

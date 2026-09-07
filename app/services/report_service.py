@@ -7,7 +7,9 @@ from reportlab.lib.units import inch
 from datetime import datetime
 from services.transaction_service import get_filtered_history
 
-DOCUMENTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'documents'))
+from paths import get_documents_dir, get_asset_path
+
+DOCUMENTS_DIR = get_documents_dir()
 
 def generate_history_pdf(transactions: list, start_date: str = None, end_date: str = None) -> str:
     os.makedirs(DOCUMENTS_DIR, exist_ok=True)
@@ -30,7 +32,7 @@ def generate_history_pdf(transactions: list, start_date: str = None, end_date: s
     subtitle_style = ParagraphStyle('SubtitleStyle', parent=styles['Normal'], alignment=1)
     
     # Add Logo
-    logo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'logo.png'))
+    logo_path = get_asset_path('logo.png')
     if os.path.exists(logo_path):
         logo = Image(logo_path, width=1*inch, height=1*inch)
         logo.hAlign = 'CENTER'

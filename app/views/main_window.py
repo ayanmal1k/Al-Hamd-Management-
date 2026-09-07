@@ -37,7 +37,8 @@ class MainWindow(QMainWindow):
         self.brand_label.setObjectName("brandLabel")
         self.brand_label.setAlignment(Qt.AlignCenter)
         
-        logo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'logo.png'))
+        from paths import get_asset_path
+        logo_path = get_asset_path('logo.png')
         if os.path.exists(logo_path):
             pixmap = QPixmap(logo_path)
             # Scale the logo down slightly to fit well in the sidebar

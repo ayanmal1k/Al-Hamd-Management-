@@ -2,8 +2,9 @@ import os
 import shutil
 from datetime import datetime
 from database import DB_PATH
+from paths import get_backup_dir
 
-BACKUP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'backups'))
+BACKUP_DIR = get_backup_dir()
 
 def create_backup():
     """Creates a backup of the current database."""

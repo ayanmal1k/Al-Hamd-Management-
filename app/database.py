@@ -2,10 +2,9 @@ import sqlite3
 import os
 from contextlib import contextmanager
 
-if os.environ.get('TESTING'):
-    DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'test_alhamd.db'))
-else:
-    DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'alhamd.db'))
+from paths import get_db_path
+
+DB_PATH = get_db_path()
 
 def get_db_connection():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
